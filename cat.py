@@ -33,7 +33,7 @@ def parse():
             description='concatenate files and print on the standard output')
     parser.add_argument('files', nargs='*')
     parser.add_argument('-n', '--number', action='store_true',
-            help=' number all output lines')
+            help='number all output lines')
     parser.add_argument('-E', '--show-ends', action='store_true',
             help='display $ at end of each line')
     return parser.parse_args()
