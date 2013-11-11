@@ -5,9 +5,9 @@ import sys
 argv = sys.argv[1:]
 
 if argv:
-    string = argv[0]
+    s = argv[0]
 else:
-    string = 'y'
+    s = 'y'
 
 while True:
-    print(string)
+    print(s)

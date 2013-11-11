@@ -1,5 +1,10 @@
 #!/usr/bin/python3.2
 
+# version: 1.1.0
+# 2013-11-11
+# support arbitary number of arguments
+
+
 import argparse
 import sys
 
@@ -20,16 +25,23 @@ def wc(args):
     files = args.files
     if not files:
         result = count_file(sys.stdin)
+        print('{0[0]:>3} {0[1]:>3} {0[2]:>3}'.format(result))
     elif len(files) == 1:
         with open(files[0], 'r') as fobj:
             result = count_file(fobj)
             print('{0[0]:>3} {0[1]:>3} {0[2]:>3} {1}'.format(result, files[0]))
     else:
+        total_count = [0, 0, 0]
         for each_file in files:
             with open(each_file, 'r') as fobj:
                 result = count_file(fobj)
                 print('{0[0]:>3} {0[1]:>3} {0[2]:>3} {1}'.format(
                                                             result, each_file))
+                for i in (0, 1, 2):
+                    total_count[i] += result[i]
+        print('{0[0]:>3} {0[1]:>3} {0[2]:>3} total'.format(total_count))
+                
+
 
 
 def parse():
