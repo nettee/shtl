@@ -1,13 +1,13 @@
 #!/usr/bin/python3.2
 
-# version: 1.5.2
+# version: 1.6.3
 # 2013-11-11
 # support arbitary number of arguments
 # support -l, -w, -m, -L arguments
 
 
-import argparse
 import sys
+import argparse
 
 def count_file(fobj):
 
@@ -25,10 +25,7 @@ def count_file(fobj):
         if length > max_len:
             max_len = length
 
-    return (line_count,
-            word_count,
-            character_count,
-            max_len)
+    return (line_count, word_count, character_count, max_len)
 
 def fmt_str(args):
     fmt_strings = []
@@ -46,34 +43,38 @@ def fmt_str(args):
     else:
         return "{0[0]:>3} {0[1]:>3} {0[2]:>3}"
 
+def display(fmt_string, the_result, filename):
+    if filename is None:
+        print(fmt_string.format(the_result))
+    else:
+        print(fmt_string.format(the_result), end=' ')
+        print(filename)
+
 def wc(args):
     files = args.files
     fmt_string = fmt_str(args)
 
     if not files:   # from standard input
         result = count_file(sys.stdin)
-        print(fmt_string.format(result))
+        display(fmt_string, result, filename=None)
 
     elif len(files) == 1:    # single origin file
         with open(files[0], 'r') as fobj:
             result = count_file(fobj)
-            print(fmt_string.format(result), end=' ')
-            print(files[0])
+            display(fmt_string, result, files[0])
 
     else:   # multiple origin file
         total_result = [0, 0, 0, 0]
         for each_file in files:
             with open(each_file, 'r') as fobj:
                 result = count_file(fobj)
-                print(fmt_string.format(result), end=' ')
-                print(each_file)
+                display(fmt_string, result, each_file)
                 for i in (0, 1, 2):
                     total_result[i] += result[i]
                 if result[3] > total_result[3]:
                     total_result[3] = result[3]
 
-        print(fmt_string.format(total_result), end=' ')
-        print('total')
+        display(fmt_string, total_result, 'total')
                 
 
 
