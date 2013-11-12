@@ -1,10 +1,24 @@
 #!/usr/bin/python3.2
 
-# version: 1.6.3
-# 2013-11-11
+# version: 1.8.3
+# 2013-11-12
 # support arbitary number of arguments
 # support -l, -w, -m, -L arguments
+# support '-' from standard input
 
+"""
+       wc - print newline, word, and characters for each file
+       (note that this is slightly different from the real wc)
+SYNOPSIS
+       wc [OPTION]... [FILE]...
+DESCRIPTION
+       Print  newline,  word, and characters for each FILE, and a total line if more than one
+       FILE is specified.  With no FILE, or when FILE is -, read standard input.  A word is  a
+       non-zero-length sequence of characters delimited by white space.  The options may
+       be used to select which counts are printed, always in  the  following  order:  newline,
+       word, character, byte, maximum line length.
+
+"""
 
 import sys
 import argparse
@@ -13,19 +27,19 @@ def count_file(fobj):
 
     line_count = 0
     word_count = 0
-    character_count = 0
+    char_count = 0
     max_len = 0
 
     for line in fobj:
         line_count += 1
-        character_count += len(line)
+        char_count += len(line)
         word_count += len(line.split())
 
         length = len(line)
         if length > max_len:
             max_len = length
 
-    return (line_count, word_count, character_count, max_len)
+    return (line_count, word_count, char_count, max_len)
 
 def fmt_str(args):
     fmt_strings = []
@@ -43,7 +57,7 @@ def fmt_str(args):
     else:
         return "{0[0]:>3} {0[1]:>3} {0[2]:>3}"
 
-def display(fmt_string, the_result, filename):
+def display(fmt_string, the_result, filename=None):
     if filename is None:
         print(fmt_string.format(the_result))
     else:
@@ -56,23 +70,30 @@ def wc(args):
 
     if not files:   # from standard input
         result = count_file(sys.stdin)
-        display(fmt_string, result, filename=None)
+        display(fmt_string, result)
 
     elif len(files) == 1:    # single origin file
-        with open(files[0], 'r') as fobj:
-            result = count_file(fobj)
-            display(fmt_string, result, files[0])
+        the_file = files[0]
+        if the_file == '-':
+            result = count_file(sys.stdin)
+        else:
+            with open(the_file, 'r') as fobj:
+                result = count_file(fobj)
+        display(fmt_string, result, the_file)
 
     else:   # multiple origin file
         total_result = [0, 0, 0, 0]
         for each_file in files:
-            with open(each_file, 'r') as fobj:
-                result = count_file(fobj)
-                display(fmt_string, result, each_file)
-                for i in (0, 1, 2):
-                    total_result[i] += result[i]
-                if result[3] > total_result[3]:
-                    total_result[3] = result[3]
+            if each_file == '-':
+                result = count_file(sys.stdin)
+            else:
+                with open(each_file, 'r') as fobj:
+                    result = count_file(fobj)
+            display(fmt_string, result, each_file)
+            for i in (0, 1, 2):
+                total_result[i] += result[i]
+            if result[3] > total_result[3]:
+                total_result[3] = result[3]
 
         display(fmt_string, total_result, 'total')
                 
