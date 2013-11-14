@@ -1,7 +1,7 @@
 #!/usr/bin/python3.2
 
-# version: 1.8.3
-# 2013-11-12
+# version: 2.5.0
+# 2013-11-14
 # support arbitary number of arguments
 # support -l, -w, -m, -L arguments
 # support '-' from standard input
@@ -22,6 +22,8 @@ DESCRIPTION
 
 import sys
 import argparse
+
+import stil
 
 def count_file(fobj):
 
@@ -52,53 +54,35 @@ def fmt_str(args):
         fmt_strings.append("{0[1]:>3}")
     if args.chars:
         fmt_strings.append("{0[2]:>3}")
+
     if fmt_strings:
         return ' '.join(fmt_strings)
     else:
         return "{0[0]:>3} {0[1]:>3} {0[2]:>3}"
 
-def display(fmt_string, the_result, filename=None):
-    if filename is None:
-        print(fmt_string.format(the_result))
-    else:
-        print(fmt_string.format(the_result), end=' ')
-        print(filename)
+def merge_result(results):
+    (line_vec, word_vec, char_vec, max_len_vec) = zip(*results)
+    return (sum(line_vec), sum(word_vec),
+            sum(char_vec), max(max_len_vec))
+
+
+def display(fmt_string, the_result, fname):
+    print(fmt_string.format(the_result), fname)
 
 def wc(args):
-    files = args.files
+    file_content = stil.fopen_named(args.files)
     fmt_string = fmt_str(args)
 
-    if not files:   # from standard input
-        result = count_file(sys.stdin)
-        display(fmt_string, result)
+    results = []
 
-    elif len(files) == 1:    # single origin file
-        the_file = files[0]
-        if the_file == '-':
-            result = count_file(sys.stdin)
-        else:
-            with open(the_file, 'r') as fobj:
-                result = count_file(fobj)
-        display(fmt_string, result, the_file)
-
-    else:   # multiple origin file
-        total_result = [0, 0, 0, 0]
-        for each_file in files:
-            if each_file == '-':
-                result = count_file(sys.stdin)
-            else:
-                with open(each_file, 'r') as fobj:
-                    result = count_file(fobj)
-            display(fmt_string, result, each_file)
-            for i in (0, 1, 2):
-                total_result[i] += result[i]
-            if result[3] > total_result[3]:
-                total_result[3] = result[3]
-
-        display(fmt_string, total_result, 'total')
-                
-
-
+    for fname, fobj in file_content:
+        result = count_file(fobj)
+        results.append(result)
+        print(fmt_string.format(result), fname)
+    
+    if len(file_content) > 1:
+        total_result = merge_result(results)
+        print(fmt_string.format(total_result), 'total')
 
 def parse():
     parser = argparse.ArgumentParser(
@@ -117,4 +101,3 @@ def parse():
 if __name__ == '__main__':
     args = parse()
     wc(args)
-    
