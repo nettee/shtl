@@ -1,23 +1,43 @@
 #!/usr/bin/python3.2
 
-"""expand.py
-expand every tab at the beginnig of each line
-into blanks, by default 4 blanks
+# version: 1.1.0
+# 2013-11-14
+# 
+
+"""
+       expand - convert tabs to spaces
+SYNOPSIS
+       expand [OPTION]... [FILE]...
+DESCRIPTION
+       Convert  tabs in each FILE to spaces, writing to standard output.  With
+       no FILE, or when FILE is -, read standard input.
+
+       Mandatory arguments to long options are  mandatory  for  short  options
+       too.
 """
 
 import sys
+import argparse
 
-def expand(line, tabsize):
-    return line.expandtabs(tabsize)
+import stil
 
-def main():
-    if len(sys.argv) == 1:
-        tabsize = 4
-    else:
-        tabsize = int(sys.argv[1])
+def expand(fobj, args):
+    tabsize = args.tabs
+    for line in fobj:
+        print(line.expandtabs(tabsize), end='')
 
-    for line in sys.stdin:
-        print(expand(line, tabsize), end = '')
+def parse():
+    parser = argparse.ArgumentParser(
+            description='convert tabs to spaces')
+    parser.add_argument('files', nargs='*')
+    parser.add_argument('-t', '--tabs', default=8,
+            help='have tabs NUMBER characters apart, not 8')
+    return parser.parse_args()
 
 if __name__ == '__main__':
-    main()
+    args = parse()
+
+    file_content = stil.fopen(args.files)
+    for fobj in file_content:
+        expand(fobj, args)
+    stil.fclose(file_content)

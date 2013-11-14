@@ -1,6 +1,6 @@
 #!/usr/bin/python3.2
 
-# version: 0.5.6
+# version: 0.7.8
 # 2013-11-12
 # 
 
@@ -9,32 +9,31 @@
 SYNOPSIS
        join [OPTION]... FILE1 FILE2
 DESCRIPTION
-       For  each pair of input lines with identical join fields, write a line to standard out‐
-       put.  The default join field is the first, delimited  by  whitespace.   When  FILE1  or
-       FILE2 (not both) is -, read standard input.
+       For  each pair of input lines with identical join fields, 
+       write a line to standard output.  The default join field is the first, 
+       delimited  by  whitespace. When FILE1 or FILE2 (not both) is -, 
+       read standard input.
 """
 
 import sys
 import argparse
 
+import stil
+
 def join(file_content):
-    pass
-
-def join_files(args):
-    files = args.files
-    file_content = []
-    for each_file in files:
-        if each_file == '-':
-            file_content.append(sys.stdin)
-        else:
-            fobj = open(each_file, 'r')
-            file_content.append(fobj)
-
-    join(file_content)
-
+    tag_map = dict()
     for fobj in file_content:
-        if fobj != sys.stdin:
-            fobj.close()
+        for line in fobj:
+            line = line.strip()
+            tag, line = line.split(' ', 1)
+            if tag in tag_map:
+                tag_map[tag].append(line)
+            else:
+                tag_map[tag] = [line]
+
+    for tag in tag_map:
+        print(tag, end='\t')
+        print('\t'.join(tag_map[tag]))
 
 def parse():
     parser = argparse.ArgumentParser(
@@ -44,5 +43,6 @@ def parse():
 
 if __name__ == '__main__':
     args = parse()
-    join_files(args)
-
+    file_content = stil.fopen(args.files)
+    join(file_content)
+    stil.fclose(file_content)

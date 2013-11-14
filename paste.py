@@ -33,11 +33,11 @@ def paste(file_content, args):
             print('\t'.join(lines))
 
 def paste_files(args):
-    file_content = stil.open_files(args.files)
+    file_content = stil.fopen(args.files)
 
     paste(file_content, args)
 
-    stil.close_files(file_content)
+    stil.fclose(file_content)
 
 def parse():
     parser = argparse.ArgumentParser(

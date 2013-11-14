@@ -84,6 +84,8 @@ def wc(args):
         total_result = merge_result(results)
         print(fmt_string.format(total_result), 'total')
 
+    stil.fclose_named(file_content)
+
 def parse():
     parser = argparse.ArgumentParser(
             description='print newline, words and charactor counts for each file')

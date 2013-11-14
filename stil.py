@@ -1,9 +1,9 @@
 import sys
 
-def is_empty_line(line):
+def is_null_line(line):
     return line == '\n'
 
-def open_files(files):
+def fopen(files):
     file_content = []
     if not files:
         file_content = [sys.stdin]
@@ -29,8 +29,13 @@ def fopen_named(files):
 
     return tuple(file_content)
 
-def close_files(file_content):
+def fclose(file_content):
     for fobj in file_content:
+        if fobj != sys.stdin:
+            fobj.close()
+
+def fclose_named(file_content):
+    for fname, fobj in file_content:
         if fobj != sys.stdin:
             fobj.close()
 

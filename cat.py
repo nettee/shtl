@@ -1,6 +1,6 @@
 #!/usr/bin/python3.2
 
-# version: 1.8.5
+# version: 2.2.0
 # 2013-11-12
 # support -n -E -T -s -b arguments
 # support '-' from standard input
@@ -15,13 +15,11 @@ SYNOPSIS
 import sys
 import argparse
 
+import stil
+
 line_count = 1
 
-def is_empty_line(line):
-    return line == '\n'
-
-
-def print_file(fileobj, args):
+def cat(fileobj, args):
     global line_count
     last_line = None
     for line in fileobj:
@@ -29,11 +27,11 @@ def print_file(fileobj, args):
             line = line.replace('\t', '^I')
 
         if args.squeeze_blank:
-            if is_empty_line(line) and is_empty_line(last_line):
+            if stil.is_null_line(line) and stil.is_null_line(last_line):
                 continue  # ignore current line
 
         if args.number_nonblank:
-            if not is_empty_line(line):
+            if not stil.is_null_line(line):
                 print('{0:>6}  '.format(line_count), end='')
                 line_count += 1
         elif args.number:
@@ -45,20 +43,6 @@ def print_file(fileobj, args):
 
         print(line, end='')
         last_line = line
-
-
-def cat(args):
-    line_count = 1  # initialization
-    if args.files:
-        for each_file in args.files:
-            if each_file == '-':
-                print_file(sys.stdin, args)
-            else:
-                with open(each_file, 'r') as fobj:
-                    print_file(fobj, args)
-    else:
-        print_file(sys.stdin, args)
-
 
 def parse():
     parser = argparse.ArgumentParser(
@@ -78,4 +62,9 @@ def parse():
 
 if __name__ == '__main__':
     args = parse()
-    cat(args)
+
+    file_content = stil.fopen(args.files)
+    for fobj in file_content:
+        cat(fobj, args)
+
+    stil.fclose(file_content)
