@@ -1,6 +1,6 @@
 #!/usr/bin/python3.2
 
-# version 2.1.3
+# version 2.3.3
 # 2013-11-18
 
 """
@@ -36,11 +36,15 @@ def extract(fields, script):
     return sfields
 
 def cut(fobj, args):
-    for line in fobj:
-        line = line.rstrip('\n')
-        fields = line.split(args.delimiter)
-        sfields = extract(fields, args.fields)
-        print(args.output_delimiter.join(sfields))
+    try:
+        for line in fobj:
+            line = line.rstrip('\n')
+            fields = line.split(args.delimiter)
+            sfields = extract(fields, args.fields)
+            print('\t'.join(sfields))
+    except IndexError as err:
+        print("Error:", str(err))
+    
 
 def parse():
     parser = argparse.ArgumentParser(
@@ -50,15 +54,10 @@ def parse():
             help='use DELIM instead of TAB for field delimiter')
     parser.add_argument('-f', '--fields',
             help='select only these fields')
-    parser.add_argument('--output-delimiter', help='use  STRING  as  the  output delimiter the default is to use the input delimiter')
-
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse()
-    if not args.output_delimiter:
-        args.output_delimiter = args.delimiter
-
     file_content = stil.fopen(args.files)
     for fobj in file_content:
         cut(fobj, args)
