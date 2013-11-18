@@ -1,5 +1,8 @@
 #!/usr/bin/python3.2
 
+# version: 1.0.1
+# 2013-11-18
+
 """ijoin.py
 like join, but work in a single file
 the input stream can either from stdin, 
