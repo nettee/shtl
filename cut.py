@@ -34,14 +34,6 @@ def extract(fields, script):
             sfields.append(fields[int(each_script)-1])
 
     return sfields
-            
-    #if script:
-    #    try:
-    #        return eval('fields[{}]'.format(script))
-    #    except IndexError as err:
-    #        print("Error: ", str(err))
-    #else:
-    #    return fields
 
 def cut(fobj, args):
     for line in fobj:
@@ -54,16 +46,19 @@ def parse():
     parser = argparse.ArgumentParser(
             description='remove sections from each line of files')
     parser.add_argument('files', nargs='*')
-    parser.add_argument('-d', '--delimiter',
+    parser.add_argument('-d', '--delimiter', default='\t',
             help='use DELIM instead of TAB for field delimiter')
     parser.add_argument('-f', '--fields',
             help='select only these fields')
-    parser.add_argument('--output-delimiter', default='\t')
+    parser.add_argument('--output-delimiter', help='use  STRING  as  the  output delimiter the default is to use the input delimiter')
 
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse()
+    if not args.output_delimiter:
+        args.output_delimiter = args.delimiter
+
     file_content = stil.fopen(args.files)
     for fobj in file_content:
         cut(fobj, args)
