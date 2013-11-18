@@ -3,7 +3,7 @@ import sys
 def is_null_line(line):
     return line == '\n'
 
-def fopen(files):
+def fopen(files, mode='r'):
     file_content = []
     if not files:
         file_content = [sys.stdin]
@@ -11,7 +11,7 @@ def fopen(files):
         if each_file == '-':
             file_content.append(sys.stdin)
         else:
-            fobj = open(each_file, 'r')
+            fobj = open(each_file, mode=mode)
             file_content.append(fobj)
 
     return tuple(file_content)
