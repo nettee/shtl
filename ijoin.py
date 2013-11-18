@@ -9,28 +9,33 @@ the input stream can either from stdin,
 import sys
 import argparse
 
-def ijoin(fobj):
+import stil
+
+def ijoin(file_content):
     collect = dict()
-    for line in fobj:
-        words = line.split()
-        foreword = words[0]
-        otherwords = '\t'.join(words[1:])
-        if foreword in collect:
-            collect[foreword].append(otherwords)
-        else:
-            collect[foreword] = [otherwords]
+    for fobj in file_content:
+        for line in fobj:
+            words = line.rstrip('\n').split()
+            foreword = words[0]
+            otherwords = '\t'.join(words[1:])
+            if foreword in collect:
+                collect[foreword].append(otherwords)
+            else:
+                collect[foreword] = [otherwords]
     
     for foreword in collect:
         print(foreword, end = '\t')
         print('\t'.join(collect[foreword]))
 
+def parse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('files', nargs='*')
+    return parser.parse_args()
+
 if __name__ == '__main__':
-    if sys.argv[1:]:
-        filename = sys.argv[1]
-        try:
-            with open(filename, 'r') as fobj:
-                ijoin(fobj)
-        except IOError as err:
-            print('error', str(err))
-    else:
-        ijoin(sys.stdin)
+    args = parse()
+    file_content = stil.fopen(args.files)
+
+    ijoin(file_content)
+
+    stil.fclose(file_content)
