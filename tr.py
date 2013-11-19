@@ -1,6 +1,6 @@
 #!/usr/bin/python3.2
 
-# version:1.0.0
+# version:1.3.1
 # 2013-11-19
 
 """
@@ -15,16 +15,22 @@ import argparse
 
 import stil
 
+def re2str(charset, state='in'):
+    """ translate the regular expression in charset to equivalent string
+        ## not accomplished yet
+    """
+    return charset
+
 def delete(args):
-    charset = args.set1
+    charset = re2str(args.set1, state='in')
 
     for line in sys.stdin:
         line = line.rstrip('\n')
         print(''.join(c for c in line if c not in charset))
 
 def translate(args):
-    charset_in = args.set1
-    charset_out = args.set2
+    charset_in = re2str(args.set1, state='in')
+    charset_out = re2str(args.set2, state='out')
     char_trans = dict(zip(charset_in, charset_out))
     
     for line in sys.stdin:
@@ -47,7 +53,10 @@ if __name__ == '__main__':
         if args.delete:
             delete(args)
         else:
-            print("tr: operand miss after {}".format(args.set1), file=sys.stderr)
+            print('tr: operand miss after "{}"'.format(args.set1), 
+                "try tr --help for more information.", 
+                sep='\n', file=sys.stderr)
+            sys.exit(1)
     else:
         translate(args)
 
