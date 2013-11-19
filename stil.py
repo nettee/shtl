@@ -40,3 +40,7 @@ def fclose_named(file_content):
             fobj.close()
 
 
+def billy(charset):
+    """ translate the regular expression in charset to equivalent string
+    """
+    return charset
