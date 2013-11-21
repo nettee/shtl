@@ -1,6 +1,6 @@
 #!/usr/bin/python3.2
 
-# version: 2.6.2
+# version: 2.6.4
 # 2013-11-14
 # support arbitary number of arguments
 # support -l, -w, -m, -L arguments
@@ -70,23 +70,28 @@ def display(fmt_string, the_result, fname):
     print(fmt_string.format(the_result), fname)
 
 def wc(args):
-    file_content = stil.fopen(args.files)
+    file_content = stil.fopen(args.files, strict=True)
     fmt_string = fmt_str(args)
 
-    results = []
+    if file_content is None:   # from <stdin>
+        result = count_file(sys.stdin)
+        print(fmt_string.format(result))
+        return
+    else:
+        results = []
 
-    for fobj in file_content:
-        fname = fobj.name
-        if fname == '<stdin>':
-            fname = '-'
+        for fobj in file_content:
+            fname = fobj.name
+            if fname == '<stdin>':
+                fname = '-'
 
-        result = count_file(fobj)
-        results.append(result)
-        print(fmt_string.format(result), fname)
-    
-    if len(file_content) > 1:
-        total_result = merge_result(results)
-        print(fmt_string.format(total_result), 'total')
+            result = count_file(fobj)
+            results.append(result)
+            print(fmt_string.format(result), fname)
+        
+        if len(file_content) > 1:
+            total_result = merge_result(results)
+            print(fmt_string.format(total_result), 'total')
 
     stil.fclose(file_content)
 

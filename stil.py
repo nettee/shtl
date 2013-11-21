@@ -1,4 +1,4 @@
-# version: 0.6.0
+# version: 0.6.4
 # 2013-11-21
 
 import sys
@@ -19,10 +19,13 @@ def strethed(ls):
 def putlist(ls, sep='\n'):
     print(sep.join(map(str, strethed(ls))))
 
-def fopen(files, mode='r'):
+def fopen(files, mode='r', strict=False):
     file_content = []
     if not files:
-        file_content = [sys.stdin]
+        if strict:
+            return None
+        else:
+            return [sys.stdin]
     for each_file in files:
         if each_file == '-':
             file_content.append(sys.stdin)
