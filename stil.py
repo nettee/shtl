@@ -1,7 +1,23 @@
+# version: 0.5.8
+# 2013-11-21
+
 import sys
 
 def is_null_line(line):
     return line == '\n'
+
+def strethed(ls):
+    result = []
+    for item in ls:
+        if isinstance(item, list):
+            result.extend(strethed(item))
+        else:
+            result.append(item)
+
+    return result
+
+def putlist(ls, sep='\n'):
+    print(sep.join(map(str, strethed(ls))))
 
 def fopen(files, mode='r'):
     file_content = []
@@ -44,3 +60,6 @@ def billy(charset):
     """ translate the regular expression in charset to equivalent string
     """
     return charset
+
+if __name__ == '__main__':
+    putlist([1,[3,3,3,],5,6,7,[8,[9,[10,'a']]],111], sep=' ')

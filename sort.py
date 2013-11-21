@@ -1,7 +1,7 @@
 #!/usr/bin/python3.2
 
-# version: 0.0.1
-# 2013-11-20
+# version: 0.1.2
+# 2013-11-21
 
 """
     sort lines of text files
@@ -25,13 +25,15 @@ def shape(file_content, args):
             yield line
 
 def sort(lines, args):
-    return sorted(lines)
+    return sorted(lines, reverse=args.reverse)
 
 
 def parse():
     parser = argparse.ArgumentParser(
             description='sort lines of text files')
     parser.add_argument('files', nargs='*')
+    parser.add_argument('-r', '--reverse', action='store_true',
+            help='reverse the result of comparisons')
 
     return parser.parse_args()
 
@@ -39,9 +41,8 @@ if __name__ == '__main__':
     args = parse()
     file_content = stil.fopen(args.files)
     
-    lines = sort(shape(file_content, args), args)
-    for line in lines:
-        print(line)
+    lines = shape(file_content, args)
+    stil.putlist(sort(lines, args))
 
     stil.fclose(file_content)
 
