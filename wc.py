@@ -1,22 +1,22 @@
 #!/usr/bin/python3.2
 
-# version: 2.5.0
+# version: 2.6.2
 # 2013-11-14
 # support arbitary number of arguments
 # support -l, -w, -m, -L arguments
 # support '-' from standard input
 
 """
-       wc - print newline, word, and characters for each file
-       (note that this is slightly different from the real wc)
+   wc - print newline, word, and characters for each file
+   (note that this is slightly different from the real wc)
 SYNOPSIS
-       wc [OPTION]... [FILE]...
+   wc [OPTION]... [FILE]...
 DESCRIPTION
-       Print  newline,  word, and characters for each FILE, and a total line if more than one
-       FILE is specified.  With no FILE, or when FILE is -, read standard input.  A word is  a
-       non-zero-length sequence of characters delimited by white space.  The options may
-       be used to select which counts are printed, always in  the  following  order:  newline,
-       word, character, byte, maximum line length.
+   Print  newline,  word, and characters for each FILE, and a total line if more than one
+   FILE is specified.  With no FILE, or when FILE is -, read standard input.  A word is  a
+   non-zero-length sequence of characters delimited by white space.  The options may
+   be used to select which counts are printed, always in  the  following  order:  newline,
+   word, character, byte, maximum line length.
 
 """
 
@@ -70,12 +70,16 @@ def display(fmt_string, the_result, fname):
     print(fmt_string.format(the_result), fname)
 
 def wc(args):
-    file_content = stil.fopen_named(args.files)
+    file_content = stil.fopen(args.files)
     fmt_string = fmt_str(args)
 
     results = []
 
-    for fname, fobj in file_content:
+    for fobj in file_content:
+        fname = fobj.name
+        if fname == '<stdin>':
+            fname = '-'
+
         result = count_file(fobj)
         results.append(result)
         print(fmt_string.format(result), fname)
@@ -84,7 +88,7 @@ def wc(args):
         total_result = merge_result(results)
         print(fmt_string.format(total_result), 'total')
 
-    stil.fclose_named(file_content)
+    stil.fclose(file_content)
 
 def parse():
     parser = argparse.ArgumentParser(

@@ -14,8 +14,6 @@ import argparse
 
 import stil
 
-d = print
-
 def grep(fobj, args, pre=None):
     if pre is None:
         prefix = ''
@@ -41,15 +39,12 @@ def parse():
 
 if __name__ == '__main__':
     args = parse()
-    file_content = stil.fopen_named(args.files)
+    file_content = stil.fopen(args.files)
 
     if len(file_content) == 1:
-        grep(file_content[0][1], args)
+        grep(file_content[0], args)
     else:
-        for (fname, fobj) in file_content:
-            if fname == '-':
-                grep(fobj, args, pre='(stdin)')
-            else:
-                grep(fobj, args, pre=fname)
+        for fobj in file_content:
+            grep(fobj, args, pre=fobj.name)
 
-    stil.fclose_named(file_content)
+    stil.fclose(file_content)
