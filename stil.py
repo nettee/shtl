@@ -2,6 +2,7 @@
 # 2013-11-21
 
 import sys
+import io
 
 def is_null_line(line):
     return line == '\n'
