@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
         FILE *fp = fopen(argv[i], "r");
         if (fp == NULL) {
             fprintf(stderr, "%s: %s: %s\n", argv[0], argv[i], strerror(errno));
+            return 1;
         } else {
             double_word(argv[i], fp);
             fclose(fp);
