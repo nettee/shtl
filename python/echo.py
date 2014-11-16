@@ -15,14 +15,17 @@ import argparse
 
 def echo(args):
     if args.e and args.E:  # note E stores False
-        args.string = eval('"""' + args.string.__str__() + '"""')
+        # call eval to automatically escape backslash
+        string = eval('"""' + args.string.__str__() + '"""')
+    else:
+        string = args.string
 
     if args.n:
-        endline = ''
+        eol = ''
     else:
-        endline = '\n'
+        eol = '\n'
 
-    print(args.string, end=endline)
+    print(string, end=eol)
 
 def parse():
     parser = argparse.ArgumentParser(
