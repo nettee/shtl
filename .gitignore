@@ -1,3 +1,9 @@
+# Intellij CLion files
+**/.idea/
+**/cmake-build-debug/
+
 *.o
 *.out
+
+# Vim temp file
 *.swp
