@@ -1,0 +1,6 @@
+[package]
+name = "cp"
+version = "0.1.0"
+authors = ["William <nettee.liu@gmail.com>"]
+
+[dependencies]
