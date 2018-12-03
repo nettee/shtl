@@ -27,9 +27,16 @@ impl Args {
 fn run(args: Args) -> Result<(), Box<Error>> {
     let mut in_file = File::open(args.in_file_name)?;
     let mut out_file = File::create(args.out_file_name)?;
-    let mut contents = String::new();
-    in_file.read_to_string(&mut contents)?;
-    out_file.write_all(contents.as_bytes())?;
+
+    let mut buffer = [0; 4096];
+
+    loop {
+        let n = in_file.read(&mut buffer)?;
+        if n == 0 {
+            break;
+        }
+        out_file.write(&buffer)?;
+    }
 
     Ok(())
 }
