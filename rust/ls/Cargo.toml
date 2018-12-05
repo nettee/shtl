@@ -1,0 +1,9 @@
+[package]
+name = "ls"
+version = "0.1.0"
+authors = ["William <nettee.liu@gmail.com>"]
+
+[dependencies]
+nix = "0.12.0"
+users = "0.8.1"
+chrono = "0.4" # date/time library

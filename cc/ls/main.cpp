@@ -12,6 +12,7 @@
 #include <vector>
 #include <algorithm>
 
+
 using namespace std;
 
 void oops(string s1, string s2) {
